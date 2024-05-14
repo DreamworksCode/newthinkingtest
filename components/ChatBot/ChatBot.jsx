@@ -216,7 +216,7 @@ const Chatbot = ({ isChatOpen, setIsChatOpen, micOpen, setMicOpen }) => {
   //   }
   // };
 
-  
+
   const playAudioStream = async (stream) => {
     streamReader = stream.getReader();
     while (true) {
@@ -228,15 +228,16 @@ const Chatbot = ({ isChatOpen, setIsChatOpen, micOpen, setMicOpen }) => {
       }
       const arrayBuffer = chunkToArrayBuffer(value);
       if (arrayBuffer) {
-        const audioBuffer = await decodeAudioData(arrayBuffer);
-        audioBufferQueue.push(audioBuffer);
-        if (!isPlaying) playNextAudioChunk();
-      }
-      else {
+        try {
+          const audioBuffer = await decodeAudioData(arrayBuffer);
+          audioBufferQueue.push(audioBuffer);
+          if (!isPlaying) playNextAudioChunk();
+        } catch (error) {
+          console.error("Error decoding audio data:", error);
+        }
+      } else {
         console.log("Empty array buffer.");
       }
-      // Check if the buffer size exceeds the limit
-      // if (audioBufferQueue.length >= BUFFER_SIZE) break;
     }
   };
   
