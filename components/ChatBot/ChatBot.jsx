@@ -220,72 +220,65 @@ const Chatbot = ({ isChatOpen, setIsChatOpen, micOpen, setMicOpen }) => {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const gainNode = audioContext.createGain();
     gainNode.connect(audioContext.destination);
-    
-    let sourceNode = null;
-    let audioBuffer = null;
   
-    const streamReader = stream.getReader();
+    const bufferLength = 3; // Adjust this value as needed
+    const audioBufferQueue = []; // Queue to store audio buffers
+    let isPlaying = false;
   
-    while (true) {
-      const { value, done } = await streamReader.read();
+    const fillBufferQueue = async () => {
+      const streamReader = stream.getReader();
+      
+      while (audioBufferQueue.length < bufferLength) {
+        const { value, done } = await streamReader.read();
   
-      if (done) break;
-      if (!value) {
-        console.log("Empty chunk.");
-        continue;
+        if (done) break;
+        if (!value) {
+          console.log("Empty chunk.");
+          continue;
+        }
+  
+        const arrayBuffer = chunkToArrayBuffer(value);
+        if (!arrayBuffer) {
+          console.log("Empty array buffer.");
+          continue;
+        }
+  
+        const audioBuffer = await decodeAudioData(arrayBuffer);
+        if (!audioBuffer) {
+          console.log("Error decoding audio data.");
+          continue;
+        }
+  
+        audioBufferQueue.push(audioBuffer);
       }
   
-      const arrayBuffer = chunkToArrayBuffer(value);
-      if (!arrayBuffer) {
-        console.log("Empty array buffer.");
-        continue;
+      // Start playing audio when the buffer queue is filled
+      if (!isPlaying && audioBufferQueue.length > 0) {
+        playNextAudioChunk();
       }
+    };
   
-      const newAudioBuffer = await decodeAudioData(arrayBuffer);
-      if (!newAudioBuffer) {
-        console.log("Error decoding audio data.");
-        continue;
-      }
-  
-      if (!sourceNode) {
-        // Create a new source node if it doesn't exist
-        sourceNode = audioContext.createBufferSource();
-        sourceNode.connect(gainNode);
-        sourceNode.start();
-      }
-  
-      if (!audioBuffer) {
-        // If there's no existing audio buffer, set the new one
-        audioBuffer = newAudioBuffer;
-        sourceNode.buffer = audioBuffer;
+    const playNextAudioChunk = () => {
+      if (audioBufferQueue.length > 0) {
+        isPlaying = true;
+        const audioBuffer = audioBufferQueue.shift();
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(gainNode);
+        source.start();
+        source.onended = () => {
+          isPlaying = false;
+          playNextAudioChunk();
+        };
       } else {
-        // Concatenate new audio buffer with the existing one
-        const combinedBuffer = concatenateBuffers(audioBuffer, newAudioBuffer, audioContext);
-        sourceNode.stop();
-        sourceNode.disconnect();
-        sourceNode = audioContext.createBufferSource();
-        sourceNode.buffer = combinedBuffer;
-        sourceNode.connect(gainNode);
-        sourceNode.start();
-        audioBuffer = combinedBuffer;
+        console.log("Audio Buffer Queue is empty.");
+        isPlaying = false;
       }
-    }
+    };
+  
+    // Start filling the buffer queue
+    fillBufferQueue();
   };
-  
-  function concatenateBuffers(buffer1, buffer2, audioContext) {
-    const combinedLength = buffer1.length + buffer2.length;
-    const combinedBuffer = audioContext.createBuffer(buffer1.numberOfChannels, combinedLength, buffer1.sampleRate);
-  
-    for (let channel = 0; channel < buffer1.numberOfChannels; channel++) {
-      const channelData = new Float32Array(combinedLength);
-      channelData.set(buffer1.getChannelData(channel), 0);
-      channelData.set(buffer2.getChannelData(channel), buffer1.length);
-      combinedBuffer.copyToChannel(channelData, channel);
-    }
-  
-    return combinedBuffer;
-  }
-  
   
   
   
