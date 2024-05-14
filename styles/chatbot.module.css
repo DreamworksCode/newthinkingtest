@@ -1,0 +1,8 @@
+.chatbot_window{
+    width: 100vw;
+    background-color: cornflowerblue;
+    opacity: 0.9;
+    overflow: hidden;
+    z-index: 100;
+    padding: 40px 100px;
+}

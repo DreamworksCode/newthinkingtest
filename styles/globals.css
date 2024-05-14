@@ -1,0 +1,370 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+body{
+  background-color: white;
+}
+
+/* Font Styling In The Website */
+.inter {
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: normal;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0;
+}
+
+/* Chatbot Css */
+.chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  transition: transform 0.3s ease-in-out;
+  z-index: 400;
+}
+
+.chatbot-container.open {
+  transform: translateX(0);
+}
+
+.chatbot-toggle {
+  background-color: #fff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #353434;
+}
+
+.chatbot-window {
+  position: absolute; /* Change from absolute to fixed */
+  bottom: 70px;
+  right: 20px;
+  min-height: 350px;
+  min-width: 350px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+  .chatbot-window-mic {
+  position: absolute; /* Change from absolute to fixed */
+  bottom: 70px;
+  right: 20px;
+  min-height: 350px;
+  min-width: 350px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  /* background-color: #4d00b3ff; */
+  /* background: linear-gradient(155deg, #4AC5F3, #6032E3) !important; */
+  background: linear-gradient(to top, #4AC5F3, #6032E3) !important;
+  /* background-color: #6032E3; */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+.chatbot-mic-box{
+ justify-content: center;
+ display: flex;
+ align-items: center;
+ flex-direction: column;
+}
+
+ 
+
+.icon-play{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  text-align: center;
+  height:70px;
+  width:70px;
+  border-radius: 50%;
+  /* border: 5px solid white; */
+  /* background-color: #6be8e6ff; */
+  background-color: red;
+}
+
+.icon-play:hover{
+  background-color: rgb(255, 59, 59);
+  scale: 1.02;
+}
+
+/* Adjust the styles to make the chat window and chat input responsive */
+@media only screen and (max-width: 768px) {
+  .chatbot-window {
+    right: -15px; /* Adjust the position for smaller screens */
+    width: 100%; /* Make the chat window full-width on smaller screens */
+    border-radius: 5px; /* Remove border-radius for mobile screens */
+    bottom: 0; /* Adjust the bottom position for mobile screens */
+  }
+  .chatbot-window-mic {
+    right: -15px; /* Adjust the position for smaller screens */
+    width: 100%; /* Make the chat window full-width on smaller screens */
+    border-radius: 5px; /* Remove border-radius for mobile screens */
+    bottom: 0; /* Adjust the bottom position for mobile screens */
+  }
+}
+
+
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-right: 8px;
+  /* max-width: 150px;  */
+  width: 50%;
+}
+
+
+.send-button{
+  padding: 8px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  max-width: 40px; 
+  margin-right: 3px;
+  background-color: #6032E3;
+}
+.send-button img {
+  width: 20px; /* Adjust the width of the microphone icon */
+  height: 20px; /* Adjust the height of the microphone icon */ 
+}
+.mic-button {
+  padding: 8px;
+  background-color: #6032E3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  max-width: 40px; /* Set a maximum width for the mic button */
+}
+
+.mic-button img {
+  width: 20px; /* Adjust the width of the microphone icon */
+  height: 20px; /* Adjust the height of the microphone icon */
+  /* margin-right: 4px; */
+}
+.chatbot-header {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #6032E3;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+  .chatbot-header1 {
+  padding: 10px;
+  border-radius: 10px;
+  /* background: linear-gradient(155deg, #4AC5F3, #6032E3) !important; */
+  background-color: #6032E3;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-title{
+  height: 35px;
+  width: 200px;
+  padding-top: 3px;
+  padding-left: 5px;
+}
+
+/* .chatbot-body {
+  padding: 10px;
+  border-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+} */
+
+
+
+
+/* .chatbot-header {
+  background-color: #4E2FCB;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+} */
+
+.animationLoader{
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatbot-body {
+  padding: 10px;
+  max-height: 300px;
+  border-radius: 10px;
+  overflow-y: auto;
+  padding-bottom: 70px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-message {
+/* background-color: #f2f2f2; */
+  padding: 8px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+}
+
+.bot {
+  background-color: #f1f1f1;
+  align-self: flex-start;
+  margin-right: 30px; 
+  align-self: flex-start;
+}
+
+.user {
+  background-color: #4E2FCB;
+  color: white;
+  align-self: flex-end;
+  margin-left: 30px;
+}
+
+button .chatbotButton {
+  padding: 8px;
+  /* background-color: #4caf50; */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  max-width: 40px; /* Set a maximum width for the button */
+}
+.chatbottoggelimage{
+  height: 40px;
+  width: 40px;
+}
+.closeButton{
+margin-right: 5px;
+}
+
+/* new css for voice visualization modal start*/
+.chatbot-mic-box.micposition {
+  display: flex;
+  padding: 10px;
+  padding-bottom: 25px;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  border-radius: 10px;
+}
+
+.iconSpeak{
+  padding-left: 5px;
+}
+/* new css for voice visualization modal end*/
+
+button[disabled] {
+cursor: not-allowed;
+}
+
+.row.chatbotButtonRow{
+width: 100%;
+text-align: center;
+justify-content: center;
+display: flex;
+align-items: center;
+position: relative;
+}
+
+.refreshButton{
+ position: absolute;
+
+}
+@media only screen and (max-width: 768px) {
+  .row.chatbotButtonRow{
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+   }
+   .icon-refresh{
+    position: absolute;
+    margin-left: -230px;
+   }
+   .icon-play-pause{
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    /* flex-direction: row; */
+    align-items: center;
+   }
+   .refresh{
+    padding-left: 0px;
+   }
+   .close{
+    padding-left: 0px !important;
+   }
+}
+
+.keen-slider__slide_blur {
+  /* padding-top: 3%; */
+  filter: blur(4px); 
+  transition: filter 0.3s; 
+}
+
+.audio_analyzer{
+  z-index: 20;
+  background: linear-gradient(to top, #4AC5F3, #6032E3) !important;
+}
+
+.contactModal .modal-content{
+  background:linear-gradient(to bottom, #6032E3,#4AC5F3);
+}
+
+.contactModal label{
+  color: #fff;
+}
+.contactModal .modal-title{
+  color: #fff;
+}
+.contactModal{
+  border: none;
+}
+
+.form-submit-button{
+  background-color: #4AC5F3;
+  border:1px solid white;
+}
+
+.form-submit-button:hover{
+  background-color: #16b8f3;
+}
+
+.cross-button{
+  position: absolute;
+  right:35px;
+  font-size: 25px;
+  color:white;
+}

@@ -1,0 +1,13 @@
+.contactModal .modal-content{
+    background:linear-gradient(to bottom, #6032E3,#A95FFF);
+}
+
+.contactModal label{
+    color: #fff;
+}
+.contactModal .modal-title{
+    color: #fff;
+}
+.contactModal{
+    border: none;
+}
