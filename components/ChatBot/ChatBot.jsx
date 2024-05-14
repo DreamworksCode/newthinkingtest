@@ -216,68 +216,28 @@ const Chatbot = ({ isChatOpen, setIsChatOpen, micOpen, setMicOpen }) => {
   //   }
   // };
 
+  
   const playAudioStream = async (stream) => {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const gainNode = audioContext.createGain();
-    gainNode.connect(audioContext.destination);
-  
-    const bufferLength = 3; // Adjust this value as needed
-    const audioBufferQueue = []; // Queue to store audio buffers
-    let isPlaying = false;
-  
-    const fillBufferQueue = async () => {
-      const streamReader = stream.getReader();
-      
-      while (audioBufferQueue.length < bufferLength) {
-        const { value, done } = await streamReader.read();
-  
-        if (done) break;
-        if (!value) {
-          console.log("Empty chunk.");
-          continue;
-        }
-  
-        const arrayBuffer = chunkToArrayBuffer(value);
-        if (!arrayBuffer) {
-          console.log("Empty array buffer.");
-          continue;
-        }
-  
+    streamReader = stream.getReader();
+    while (true) {
+      const { value, done } = await streamReader.read();
+      if (done) break;
+      if (!value) {
+        console.log("Empty chunk.");
+        continue;
+      }
+      const arrayBuffer = chunkToArrayBuffer(value);
+      if (arrayBuffer) {
         const audioBuffer = await decodeAudioData(arrayBuffer);
-        if (!audioBuffer) {
-          console.log("Error decoding audio data.");
-          continue;
-        }
-  
         audioBufferQueue.push(audioBuffer);
+        if (!isPlaying) playNextAudioChunk();
       }
-  
-      // Start playing audio when the buffer queue is filled
-      if (!isPlaying && audioBufferQueue.length > 0) {
-        playNextAudioChunk();
+      else {
+        console.log("Empty array buffer.");
       }
-    };
-  
-    const playNextAudioChunk = () => {
-      if (audioBufferQueue.length > 0) {
-        isPlaying = true;
-        const audioBuffer = audioBufferQueue.shift();
-        const source = audioContext.createBufferSource();
-        source.buffer = audioBuffer;
-        source.connect(gainNode);
-        source.start();
-        source.onended = () => {
-          isPlaying = false;
-          playNextAudioChunk();
-        };
-      } else {
-        console.log("Audio Buffer Queue is empty.");
-        isPlaying = false;
-      }
-    };
-  
-    // Start filling the buffer queue
-    fillBufferQueue();
+      // Check if the buffer size exceeds the limit
+      // if (audioBufferQueue.length >= BUFFER_SIZE) break;
+    }
   };
   
   
